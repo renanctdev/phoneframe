@@ -7,6 +7,7 @@ const { normalizeUrl } = require("./urlUtils");
 const { deviceGeometry } = require("../shared/deviceGeometry");
 const recording = require("./recording");
 const projects = require("./projects");
+const { APP_ICON } = require("./appIcon");
 
 // Renderização: GPU por padrão. Sem GPU, rolagem, desfoque e vídeo do site
 // passam a ser desenhados pela CPU (medido: ~40% a mais de CPU numa página
@@ -53,6 +54,7 @@ function createPickerWindow() {
     width: 980,
     height: 720,
     title: "PhoneFrame",
+    icon: APP_ICON,
     webPreferences: {
       preload: path.join(__dirname, "preload-picker.js"),
       contextIsolation: true,
@@ -119,6 +121,7 @@ async function openSimulator({ deviceId, url, customWidth, customHeight }) {
     maximizable: false,
     fullscreenable: false,
     title: `PhoneFrame – ${device.name}`,
+    icon: APP_ICON,
     webPreferences: {
       preload: path.join(__dirname, "preload-shell.js"),
       contextIsolation: true,

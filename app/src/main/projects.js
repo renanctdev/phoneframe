@@ -4,6 +4,7 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const { pathToFileURL } = require("url");
+const { APP_ICON } = require("./appIcon");
 
 const PROJECT_FILE = "project.json";
 const TELEMETRY_FILE = "telemetry.json";
@@ -58,6 +59,7 @@ function openEditor(dir) {
     show: false,
     backgroundColor: "#16171b",
     title: "Editor – PhoneFrame",
+    icon: APP_ICON,
     webPreferences: {
       preload: path.join(__dirname, "preload-editor.js"),
       contextIsolation: true,
