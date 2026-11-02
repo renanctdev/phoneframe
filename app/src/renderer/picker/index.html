@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>PhoneFrame</title>
+  <link rel="stylesheet" href="../shared/device-frame.css" />
+  <link rel="stylesheet" href="picker.css" />
+  <script src="../../shared/deviceGeometry.js"></script>
+  <script src="../shared/device-frame.js"></script>
+</head>
+<body>
+  <header class="top">
+    <h1>PhoneFrame</h1>
+    <p>Escolha um aparelho, digite o link do site e abra a simulação.</p>
+  </header>
+
+  <section class="url-bar">
+    <input id="urlInput" type="text" placeholder="exemplo.com ou https://exemplo.com" />
+    <button id="openButton">Abrir simulador</button>
+    <button id="recordingsButton" class="secondary" title="Abrir uma gravação no editor">Abrir gravação…</button>
+  </section>
+  <p id="errorMessage" class="error" hidden></p>
+
+  <nav class="tabs" id="tabs">
+    <button data-category="iphone" class="tab active">iPhone</button>
+    <button data-category="android" class="tab">Android</button>
+    <button data-category="tablet" class="tab">Tablet</button>
+    <button data-category="custom" class="tab">Personalizado</button>
+  </nav>
+
+  <section id="customPanel" class="custom-panel" hidden>
+    <label>Largura (px) <input id="customWidth" type="number" value="390" min="240" max="2000" /></label>
+    <label>Altura (px) <input id="customHeight" type="number" value="844" min="320" max="3000" /></label>
+  </section>
+
+  <main id="deviceGrid" class="device-grid"></main>
+
+  <script src="picker.js"></script>
+</body>
+</html>

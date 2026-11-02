@@ -1,0 +1,50 @@
+/*
+ * Moldura de aparelho desenhada em CSS puro (sem imagens de terceiros).
+ * As medidas (largura/altura/padding/raio/notch) são calculadas a partir
+ * das especificações reais de cada device (ver deviceCatalog.js) e
+ * aplicadas via style inline por applyDeviceFrame() (device-frame.js) —
+ * este arquivo só define a estrutura/aparência estática.
+ */
+
+.phone-frame {
+  position: relative;
+  background: linear-gradient(160deg, #8a6f79 0%, #3b2e34 12%, #2a2126 40%, #4c3a42 62%, #2a2126 84%, #7d6470 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+.phone-frame__screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+.phone-frame__notch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  z-index: 2;
+}
+
+.phone-frame[data-notch="none"] .phone-frame__notch {
+  display: none;
+}
+
+.phone-frame__home-indicator {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #555;
+  z-index: 2;
+  display: none;
+}
+
+.phone-frame[data-os="ios"][data-notch="notch"] .phone-frame__home-indicator,
+.phone-frame[data-os="ios"][data-notch="dynamic-island"] .phone-frame__home-indicator {
+  display: block;
+}

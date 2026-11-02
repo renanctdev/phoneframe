@@ -1,0 +1,106 @@
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  user-select: none;
+}
+.bar {
+  position: absolute;
+  inset: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 8px;
+  border-radius: 28px;
+  background: rgba(28, 29, 33, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e8e9ec;
+}
+.rec {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.rec:hover { border-color: #fff; }
+.rec__dot {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #ff3b30;
+}
+.rec__square {
+  position: absolute;
+  inset: 11px;
+  border-radius: 4px;
+  background: #ff3b30;
+  display: none;
+}
+.rec__count {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+}
+.timer {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+  color: #a9acb3;
+  min-height: 15px;
+}
+.small {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: #cfd1d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.small:hover { background: rgba(255, 255, 255, 0.08); }
+.drag {
+  flex: 1;
+  width: 24px;
+  min-height: 18px;
+  border-radius: 6px;
+  -webkit-app-region: drag;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.35) 1px, transparent 1.5px);
+  background-size: 6px 6px;
+  background-position: center;
+}
+
+.bar[data-state="countdown"] .rec__dot { opacity: 0.25; }
+.bar[data-state="countdown"] .rec__count { display: flex; }
+.bar[data-state="recording"] .rec__dot { display: none; }
+.bar[data-state="recording"] .rec__square { display: block; }
+.bar[data-state="recording"] .timer { color: #ff6961; }
+.bar[data-state="recording"] .timer::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #ff3b30;
+  vertical-align: 1px;
+  animation: blink 1s steps(2, start) infinite;
+}
+.bar[data-state="saving"] .rec { opacity: 0.4; cursor: default; }
+.bar[data-state="preparing"] .rec { opacity: 0.6; }
+@keyframes blink { to { visibility: hidden; } }

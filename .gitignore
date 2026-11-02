@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output (installers, unpacked app, electron-builder debug files)
+dist/
+*-debug.yml
+
+# Logs and temporary files
+*.log
+*.part
+
+# Environment files and secrets
+.env*
+
+# Local tooling and internal docs (not part of the public repository)
+.kiro/
+docs/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file: blob:; media-src 'self' file: blob:; worker-src 'self' blob:" />
+  <title>Editor</title>
+  <link rel="stylesheet" href="editor.css" />
+</head>
+<body>
+  <header class="ed-header">
+    <div class="ed-title"><strong id="projName">Gravação</strong><span id="projInfo"></span></div>
+    <div class="ed-actions">
+      <button id="undoBtn" class="icon" title="Desfazer (Ctrl+Z)" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+      </button>
+      <button id="redoBtn" class="icon" title="Refazer (Ctrl+Y)" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m15 14 5-5-5-5M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+      </button>
+      <button id="folderBtn" title="Abrir a pasta desta gravação">Pasta</button>
+      <button id="aboutBtn" title="Créditos e licenças">Sobre</button>
+      <button id="exportBtn" class="primary" title="Exportar o vídeo final (Ctrl+E)">Exportar MP4</button>
+    </div>
+  </header>
+
+  <main class="ed-main">
+    <div class="ed-stage" id="stageWrap"><canvas id="preview"></canvas></div>
+    <aside class="ed-inspector" id="inspector"></aside>
+  </main>
+
+  <section class="ed-timeline">
+    <div class="tl-toolbar">
+      <button id="playBtn" class="play" title="Reproduzir / pausar (Espaço)">
+        <svg class="i-play" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7 4.5v15l12-7.5Z"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <span class="tl-time" id="timeLabel">0:00.0 / 0:00.0</span>
+      <span class="tl-out" id="outLabel"></span>
+      <span class="tl-sep"></span>
+      <button data-add="zooms" class="add add--zoom" title="Adicionar zoom no ponto atual">+ Zoom</button>
+      <button data-add="cuts" class="add add--cut" title="Adicionar corte no ponto atual">+ Corte</button>
+      <button data-add="speeds" class="add add--speed" title="Adicionar trecho acelerado/lento">+ Velocidade</button>
+      <button data-add="texts" class="add add--text" title="Adicionar texto">+ Texto</button>
+      <span class="tl-message" id="tlMessage"></span>
+      <span class="tl-grow"></span>
+      <span class="tl-hint">Clique duplo numa trilha cria uma região · Ctrl+roda = zoom da linha do tempo</span>
+      <button id="tlOut" class="icon" title="Afastar">−</button>
+      <button id="tlFit" title="Mostrar a gravação inteira">Ajustar</button>
+      <button id="tlIn" class="icon" title="Aproximar">+</button>
+    </div>
+    <div class="tl" id="timeline"></div>
+  </section>
+
+  <video id="video" preload="auto" playsinline></video>
+
+  <!-- Filtro de nitidez usado pelo compositor ao ampliar a gravação (ctx.filter = url(#sim-sharpen)). -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="sim-sharpen" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+      <feConvolveMatrix id="sim-sharpen-kernel" order="3" preserveAlpha="true" kernelMatrix="0 0 0 0 1 0 0 0 0" />
+    </filter>
+  </svg>
+
+  <div class="modal" id="loading">
+    <div class="modal__box">
+      <p id="loadingText">Abrindo…</p>
+      <div class="progress"><div class="progress__bar is-indeterminate" id="loadingBar"></div></div>
+    </div>
+  </div>
+
+  <div class="modal" id="exportModal" hidden>
+    <div class="modal__box">
+      <h2 id="exportTitle">Exportando vídeo</h2>
+      <div id="exportProgress">
+        <p id="exportLabel"></p>
+        <div class="progress"><div class="progress__bar" id="exportBar"></div></div>
+      </div>
+      <div id="exportDone" hidden>
+        <p class="path" id="exportPath"></p>
+        <p class="muted" id="exportTime"></p>
+        <div class="modal__actions">
+          <button id="exportReveal">Mostrar na pasta</button>
+          <button id="exportClose" class="primary">Fechar</button>
+        </div>
+      </div>
+      <div class="modal__actions"><button id="exportCancel">Cancelar</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="aboutModal" hidden>
+    <div class="modal__box modal__box--about">
+      <h2>Sobre o PhoneFrame <span class="muted" id="aboutVersion"></span></h2>
+      <p>Copyright © 2026 Renan Cassiano Teixeira and PhoneFrame contributors. Software livre distribuído sob a
+        <strong>GNU Affero General Public License v3.0</strong>
+        (<a href="#" data-link="license">texto da licença</a>). Você pode redistribuí-lo e modificá-lo
+        nos termos dessa licença.</p>
+      <p>Código-fonte correspondente: <a href="#" id="aboutRepo" data-link="repository"></a></p>
+      <p><strong>Este programa é fornecido sem nenhuma garantia</strong>, até o limite máximo permitido
+        pela lei aplicável.</p>
+      <p class="muted about-legal" lang="en">This program comes with ABSOLUTELY NO WARRANTY. This is free
+        software, and you are welcome to redistribute it under the terms of the GNU Affero General Public
+        License, version 3.</p>
+
+      <h3>Créditos</h3>
+      <ul class="about-credits">
+        <li><strong>Recordly</strong> (github.com/webadderallorg/Recordly), © 2026 webadderall, AGPL-3.0:
+          o zoom automático, a câmera que acompanha o toque e as animações de zoom foram portados dele.</li>
+        <li><strong>OpenScreen</strong> (github.com/siddharthvaddem/openscreen), © 2025 Siddharth Vaddem,
+          MIT: projeto de origem do Recordly.</li>
+        <li><strong>Mediabunny</strong> (mediabunny.dev), © Vanilagy and contributors, MPL-2.0:
+          leitura e gravação de MP4.</li>
+        <li><strong>Electron</strong> e <strong>Chromium</strong>, com suas respectivas licenças.</li>
+      </ul>
+      <p class="muted">Os avisos completos estão no arquivo NOTICE.md, no repositório e na pasta
+        resources da instalação.</p>
+      <div class="modal__actions"><button id="aboutClose" class="primary">Fechar</button></div>
+    </div>
+  </div>
+
+  <script type="module" src="editor.js"></script>
+</body>
+</html>

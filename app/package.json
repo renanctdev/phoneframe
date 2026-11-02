@@ -1,0 +1,71 @@
+{
+  "name": "phoneframe",
+  "productName": "PhoneFrame",
+  "version": "0.1.0",
+  "description": "Desktop app to preview, simulate mobile viewports, and record studio-quality framed demos",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "author": "Renan Cassiano Teixeira",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renanctdev/phoneframe.git"
+  },
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "vendor": "node -e \"const fs=require('fs');fs.copyFileSync('node_modules/mediabunny/dist/bundles/mediabunny.min.mjs','src/renderer/vendor/mediabunny.mjs');fs.copyFileSync('node_modules/mediabunny/LICENSE','src/renderer/vendor/mediabunny.LICENSE.txt')\"",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "mediabunny": "1.65.0",
+    "rcedit": "^4.0.1"
+  },
+  "build": {
+    "appId": "com.phoneframe.desktop",
+    "productName": "PhoneFrame",
+    "copyright": "Copyright © 2026 Renan Cassiano Teixeira and PhoneFrame contributors",
+    "directories": {
+      "output": "../dist"
+    },
+    "afterPack": "scripts/after-pack.js",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "../NOTICE.md",
+        "to": "NOTICE.md"
+      }
+    ],
+    "win": {
+      "executableName": "PhoneFrame",
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "PhoneFrame"
+    }
+  }
+}

@@ -1,0 +1,221 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  user-select: none;
+}
+
+/* Janela transparente: só o celular é pintado. Tamanhos em pontos de design;
+   o processo principal aplica o zoom da janela para caber na tela. */
+.phone {
+  position: relative;
+}
+
+.side-button {
+  position: absolute;
+  width: 6px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #3a2c32, #7a6068 45%, #3a2c32);
+  -webkit-app-region: drag;
+}
+
+/* Aro metálico (titânio escuro) */
+.phone__body {
+  position: absolute;
+  top: 0;
+  background:
+    linear-gradient(160deg, #8a6f79 0%, #3b2e34 12%, #2a2126 40%, #4c3a42 62%, #2a2126 84%, #7d6470 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    inset 0 0 2px 2px rgba(0, 0, 0, 0.55);
+  -webkit-app-region: drag;
+}
+
+/* Borda preta entre o aro e a tela */
+.phone__bezel {
+  position: absolute;
+  background: #050505;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.phone__screen {
+  position: absolute;
+  overflow: hidden;
+  background: #1c1c1e;
+  display: flex;
+  flex-direction: column;
+  color: #f2f2f7;
+  -webkit-app-region: no-drag;
+  /* evita "vazamento" do conteúdo nos cantos arredondados */
+  transform: translateZ(0);
+}
+
+/* ---- barra de status ---- */
+.statusbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.2px;
+  -webkit-app-region: drag;
+}
+.statusbar__icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.statusbar__icons svg { fill: currentColor; color: #f2f2f7; }
+
+.island {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  z-index: 5;
+  -webkit-app-region: drag;
+}
+.island[data-kind="dynamic-island"] { top: 11px; width: 124px; height: 36px; border-radius: 20px; }
+.island[data-kind="notch"] { top: 0; width: 162px; height: 32px; border-radius: 0 0 20px 20px; }
+.island[data-kind="punch-hole"] { top: 10px; width: 12px; height: 12px; border-radius: 50%; }
+.island[data-kind="none"] { display: none; }
+
+/* ---- barra de endereço ---- */
+.urlbar {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background: #1c1c1e;
+}
+.urlbar__pill {
+  flex: 1;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: #2c2c2e;
+  color: #c7c7cc;
+}
+.urlbar__icon { flex: 0 0 auto; opacity: 0.85; }
+.urlbar__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f2f2f7;
+  font: inherit;
+  font-size: 15px;
+  text-align: center;
+  user-select: text;
+}
+.urlbar__input:focus { text-align: left; }
+
+.progress {
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: #0a84ff;
+  border-radius: 2px;
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+body[data-os="android"] .urlbar__pill { border-radius: 999px; }
+body[data-os="android"] .urlbar__input { text-align: left; }
+
+/* ---- área do site ---- */
+.viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #fff;
+}
+.viewport webview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---- barra inferior ---- */
+.toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 12px;
+  background: #1c1c1e;
+}
+.toolbar button {
+  width: 40px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: #f2f2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.toolbar button:hover { background: rgba(255, 255, 255, 0.08); }
+.toolbar button:disabled { color: #636366; cursor: default; background: transparent; }
+.toolbar .toolbar__primary {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f2f2f7;
+  color: #1c1c1e;
+}
+.toolbar .toolbar__primary:hover { background: #fff; }
+
+.home-area {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1c1c1e;
+  -webkit-app-region: drag;
+}
+.home-indicator {
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  background: #f2f2f7;
+}
+body[data-os="android"] .home-indicator { width: 108px; height: 4px; opacity: 0.8; }
+
+/* Botão home físico (iPhone SE) */
+.home-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #2b2b2b;
+  display: none;
+}
+
+/* Android: aro em alumínio grafite */
+body[data-os="android"] .phone__body {
+  background: linear-gradient(160deg, #8d9096 0%, #3c3f45 12%, #2a2c30 40%, #44474d 62%, #2a2c30 84%, #80838a 100%);
+}
+body[data-os="android"] .side-button {
+  background: linear-gradient(90deg, #2e3034, #6f7278 45%, #2e3034);
+}
